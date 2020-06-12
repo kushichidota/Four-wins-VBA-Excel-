@@ -1,0 +1,38 @@
+Option Explicit
+Public Zug As String
+Public gestartet As Boolean
+
+
+Sub Start()
+
+If gestartet = True Then Exit Sub
+gestartet = True
+
+Dim Zwischen As Integer
+Randomize
+
+Zwischen = Int(Rnd() * 2)
+
+If Zwischen = 1 Then
+    Zug = "Grün"
+Else
+    Zug = "Rot"
+End If
+
+Range("M6").Value = Zug + " ist dran"
+
+End Sub
+
+
+
+Sub Beenden()
+
+If gestartet = False Then Exit Sub
+gestartet = False
+
+Worksheets("Tabelle1").Range("B2:K11").Interior.Color = vbWhite
+Worksheets("Tabelle1").Range("M6:N6").Value = "OFF"
+
+End Sub
+
+
