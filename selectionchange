@@ -1,0 +1,353 @@
+' Class Worksheet(1) - SelectionChange
+
+
+Option Explicit
+
+
+
+Private Sub Worksheet_SelectionChange(ByVal Target As Range)
+
+Dim i As Integer, s As Integer, z As Integer, count As Integer, r As Integer, c As Integer, x As Integer, y As Integer, zp As Integer, dz As Integer, ds As Integer
+
+
+s = Asc(Mid(Target.Address, 2, 1)) - 64
+z = CInt(Right(Target.Address, 1))
+dz = 0
+ds = 0
+c = 0
+r = 0
+
+
+
+If Target.Address = "$M$3:$N$3" Then
+        Start
+        
+ElseIf Not gestartet Then Exit Sub
+
+ElseIf Target.Address = "$M$9:$N$9" Then
+        Beenden
+        Exit Sub
+
+ElseIf s < 2 Or s > 11 Or z < 2 Or z > 11 Then
+    Exit Sub
+        
+Else
+    Select Case Zug
+     
+        'Falls Grün am Zug
+        Case "Grün"
+            For i = 11 To 2 Step -1
+                If Cells(i, s).Interior.Color = vbWhite Then
+                    Cells(i, s).Interior.Color = vbGreen
+                    Zug = "Rot"
+                    zp = i
+                    Exit For
+                End If
+            Next
+            
+                    
+                    
+                        'Vier Grüne in Reihe in horizontaler Richtung vorhanden?
+                        count = 0
+                        For c = 2 To 11 Step 1
+                            If Cells(zp, c).Interior.Color = vbGreen Then
+                                count = count + 1
+                                If count = 4 Then
+                                    MsgBox "Grün gewinnt"
+                                    Beenden
+                                    Exit Sub
+                                End If
+                            Else
+                                count = 0
+                            End If
+                        Next c
+                        
+                        'Vier Grüne in Reihe in vertikale Richtung vorhanden?
+                        count = 0
+                        For r = 2 To 11
+                            If Cells(r, s).Interior.Color = vbGreen Then
+                                count = count + 1
+                                If count = 4 Then
+                                    MsgBox "Grün gewinnt"
+                                    Beenden
+                                    Exit Sub
+                                End If
+                            Else
+                                count = 0
+                            End If
+                        Next
+                        
+                        
+                 'Prüfe Diagonale von links oben nach rechts unten
+                        'Prüfe die Hauptdiagonale nach einem Sieges-Quartett (Oben links nach unten rechts)
+                        count = 0
+                        If zp = s Then
+                                    For i = 2 To 11
+                                        If Cells(i, i).Interior.Color = vbGreen Then
+                                            count = count + 1
+                                            If count = 4 Then
+                                                MsgBox "Grün gewinnt"
+                                                Beenden
+                                                Exit Sub
+                                            End If
+                                        Else
+                                            count = 0
+                                        End If
+                                    Next
+                            
+                          'Diagonale von links oben nach rechts unten wird durch linken und unteren Spielfeldrand limitiert
+                          count = 0
+                          ElseIf zp > s Then
+                            ds = 2
+                            
+                                    For dz = zp - (s - 2) To 11
+                                        If Cells(dz, ds).Interior.Color = vbGreen Then
+                                            count = count + 1
+                                            If count = 4 Then
+                                                MsgBox "Grün gewinnt"
+                                                Beenden
+                                                Exit Sub
+                                            End If
+                                        Else
+                                            count = 0
+                                        End If
+                                        ds = ds + 1
+                                    Next
+                                    
+                            'Diagonale von links oben nach rechts unten wird durch oberen und rechten Spielfeldrand limitiert
+                            count = 0
+                            ElseIf zp < s Then
+                                    dz = 2
+                                    For ds = s - (zp - 2) To 11
+                                        If Cells(dz, ds).Interior.Color = vbGreen Then
+                                            count = count + 1
+                                            If count = 4 Then
+                                                MsgBox "Grün gewinnt"
+                                                Beenden
+                                                Exit Sub
+                                            End If
+                                        Else
+                                            count = 0
+                                        End If
+                                        dz = dz + 1
+                                    Next
+                            End If
+                            
+                            
+                    'Prüfe die Diagonale von rechts oben nach links unten
+                            'Hauptdiagonale
+                            count = 0
+                            If zp + s = 13 Then  ' Bei dieser Summe liegt der letzte platzierte Stein auf der Hauptdiagonalen
+                                    ds = 2
+                                    For dz = 11 To 2 Step -1
+                                             If Cells(dz, ds).Interior.Color = vbGreen Then
+                                            count = count + 1
+                                            If count = 4 Then
+                                                MsgBox "Grün gewinnt"
+                                                Beenden
+                                                Exit Sub
+                                            End If
+                                        Else
+                                            count = 0
+                                        End If
+                                        ds = ds + 1
+                                    Next
+                                    
+                            'Diagonale in der unteren Hälfte
+                            ElseIf zp + s > 13 Then
+                                    ds = s - (11 - zp)
+                                    For dz = 11 To s - (11 - zp) Step -1
+                                             If Cells(dz, ds).Interior.Color = vbGreen Then
+                                                count = count + 1
+                                             If count = 4 Then
+                                                MsgBox "Grün gewinnt"
+                                                Beenden
+                                                Exit Sub
+                                            End If
+                                        Else
+                                            count = 0
+                                        End If
+                                        ds = ds + 1
+                                    Next
+                            
+                            ElseIf zp + s < 13 Then
+                                    dz = zp + (s - 2)
+                                    For ds = 2 To zp + (s - 2)
+                                             If Cells(dz, ds).Interior.Color = vbGreen Then
+                                                count = count + 1
+                                             If count = 4 Then
+                                                MsgBox "Grün gewinnt"
+                                                Beenden
+                                                Exit Sub
+                                            End If
+                                        Else
+                                            count = 0
+                                        End If
+                                        dz = dz - 1
+                                    Next
+                            End If
+                    
+        'Falls Rot am Zug
+        Case "Rot"
+            For i = 11 To 2 Step -1
+            
+                If Cells(i, s).Interior.Color = vbWhite Then
+                    Cells(i, s).Interior.Color = vbRed
+                    Zug = "Grün"
+                    zp = i
+                    Exit For
+                End If
+                
+            Next
+            
+            
+                        'Vier Rote in Reihe in horizontaler Richtung vorhanden?
+                        For c = 2 To 11
+                            If Cells(zp, c).Interior.Color = vbRed Then
+                                count = count + 1
+                                If count = 4 Then
+                                      MsgBox "Rot gewinnt"
+                                      Beenden
+                                      Exit Sub
+                                End If
+                            Else
+                                count = 0
+                            End If
+                        Next
+                        
+                        'Vier Rote in Reihe in vertikale Richtung vorhanden?
+                        count = 0
+                        For r = 2 To 11
+                            If Cells(r, s).Interior.Color = vbRed Then
+                                count = count + 1
+                                If count = 4 Then
+                                    MsgBox "Rot gewinnt"
+                                    Beenden
+                                    Exit Sub
+                                End If
+                            Else
+                                count = 0
+                            End If
+                        Next r
+                        
+                        'Prüfe Diagonale von links oben nach rechts unten
+                        'Prüfe die Hauptdiagonale nach einem Sieges-Quartett (Oben links nach unten rechts)
+                        count = 0
+                        If zp = s Then
+                        
+                                    For i = 2 To 11
+                                        If Cells(i, i).Interior.Color = vbRed Then
+                                            count = count + 1
+                                            If count = 4 Then
+                                                MsgBox "Rot gewinnt"
+                                                Beenden
+                                                Exit Sub
+                                            End If
+                                        Else
+                                            count = 0
+                                        End If
+                            Next
+                            
+                          'Diagonale von links oben nach rechts unten wird durch linken und unteren Spielfeldrand limitiert
+                          ElseIf zp > s Then
+                            ds = 2
+                            
+                                    For dz = zp - (s - 2) To 11
+                                        If Cells(dz, ds).Interior.Color = vbRed Then
+                                            count = count + 1
+                                            If count = 4 Then
+                                                MsgBox "Rot gewinnt"
+                                                Beenden
+                                                Exit Sub
+                                            End If
+                                        Else
+                                            count = 0
+                                        End If
+                                        ds = ds + 1
+                                    Next
+                                    
+                            'Diagonale von links oben nach rechts unten wird durch oberen und rechten Spielfeldrand limitiert
+                            ElseIf zp < s Then
+                                    dz = 2
+                                    For ds = s - (zp - 2) To 11
+                                        If Cells(dz, ds).Interior.Color = vbRed Then
+                                            count = count + 1
+                                            If count = 4 Then
+                                                MsgBox "Rot gewinnt"
+                                                Beenden
+                                                Exit Sub
+                                            End If
+                                        Else
+                                            count = 0
+                                        End If
+                                        dz = dz + 1
+                                    Next
+                            End If
+                            
+                            
+                    'Prüfe die Diagonale von rechts oben nach links unten
+                            'Hauptdiagonale
+                            count = 0
+                            If zp + s = 13 Then  ' Bei dieser Summe liegt der letzte platzierte Stein auf der Hauptdiagonalen
+                                    ds = 2
+                                    For dz = 11 To 2 Step -1
+                                             If Cells(dz, ds).Interior.Color = vbRed Then
+                                            count = count + 1
+                                            If count = 4 Then
+                                                MsgBox "Rot gewinnt"
+                                                Beenden
+                                                Exit Sub
+                                            End If
+                                        Else
+                                            count = 0
+                                        End If
+                                        ds = ds + 1
+                                    Next
+                                    
+                            'Diagonale in der unteren Hälfte
+                            ElseIf zp + s > 13 Then
+                                    ds = s - (11 - zp)
+                                    For dz = 11 To s - (11 - zp) Step -1
+                                             If Cells(dz, ds).Interior.Color = vbRed Then
+                                                count = count + 1
+                                             If count = 4 Then
+                                                MsgBox "Rot gewinnt"
+                                                Beenden
+                                                Exit Sub
+                                            End If
+                                        Else
+                                            count = 0
+                                        End If
+                                        ds = ds + 1
+                                    Next
+                            
+                            ElseIf zp + s < 13 Then
+                                    dz = zp + (s - 2)
+                                    For ds = 2 To zp + (s - 2)
+                                             If Cells(dz, ds).Interior.Color = vbRed Then
+                                                count = count + 1
+                                             If count = 4 Then
+                                                MsgBox "Rot gewinnt"
+                                                Beenden
+                                                Exit Sub
+                                            End If
+                                        Else
+                                            count = 0
+                                        End If
+                                        dz = dz - 1
+                                    Next
+                            End If
+                        
+    End Select
+End If
+                
+
+
+
+Worksheets("Tabelle1").Range("M6").Value = Zug + " ist dran"
+Worksheets("Tabelle1").Range("M6").Select
+
+
+
+
+End Sub
