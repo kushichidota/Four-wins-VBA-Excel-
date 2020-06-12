@@ -1,0 +1,50 @@
+' How the matchfield should look like
+
+
+Option Explicit
+
+Sub Spielfeld()
+
+ThisWorkbook.Worksheets(1).Activate
+ 
+gestartet = False
+
+Range("B2:k11").RowHeight = 40
+Range("B2:K11").ColumnWidth = 7
+ThisWorkbook.Worksheets("Tabelle1").Range("B2:k11").Borders.Weight = xlThin
+ThisWorkbook.Worksheets("Tabelle1").Range("B2:k11").BorderAround Weight:=xlThick
+ThisWorkbook.Worksheets("Tabelle1").Range("B2:k11").Interior.Color = vbWhite
+
+
+ThisWorkbook.Worksheets("Tabelle1").Range("M3:N3").Merge
+ThisWorkbook.Worksheets("Tabelle1").Range("M6:N6").Merge
+ThisWorkbook.Worksheets("Tabelle1").Range("M9:N9").Merge
+
+With Range("M3:N3")
+        .Borders.Weight = xlThick
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlCenter
+        .Value = "Starten"
+        .Interior.Color = RGB(192, 192, 192)
+        .Font.Size = 20
+End With
+
+With Range("M6:N6")
+        .Borders.Weight = xlThick
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlCenter
+        .Value = "Info"
+        .Interior.Color = RGB(192, 192, 192)
+        .Font.Size = 20
+End With
+
+With Range("M9:N9")
+        .Borders.Weight = xlThick
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlCenter
+        .Value = "Beenden"
+        .Interior.Color = RGB(192, 192, 192)
+        .Font.Size = 20
+End With
+
+End Sub
